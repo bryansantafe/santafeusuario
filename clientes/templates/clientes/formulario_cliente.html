@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Nuevo Cliente | Santa Fe{% endblock %}
+{% block page_title %}Registrar Nuevo Usuario{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+        <form method="POST" class="space-y-6">
+            {% csrf_token %} <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-zinc-500 mb-2">Nombre o Razón Social</label>
+                    <input type="text" name="nombre_usuario" required
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-zinc-500 mb-2">Tipo de Identificación</label>
+                    <select name="tipo_identificacion"
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition">
+                        <option value="NIT">NIT</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-zinc-500 mb-2">Número de Identificación</label>
+                    <input type="text" name="numero_identificacion" required
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-zinc-500 mb-2">Teléfono</label>
+                    <input type="text" name="telefono" required
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-500 mb-2">Correo Electrónico</label>
+                    <input type="text" name="correo_electronico" required
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-zinc-500 mb-2">Dirección de Facturación</label>
+                <textarea name="direccion_facturacion" rows="3" required
+                    class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition"></textarea>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="submit"
+                    class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold py-3 rounded-xl transition shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                    Guardar Cliente
+                </button>
+                <a href="{% url 'lista_clientes' %}"
+                    class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white text-center font-bold py-3 rounded-xl transition">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

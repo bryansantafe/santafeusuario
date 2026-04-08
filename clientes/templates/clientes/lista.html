@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Lista de Usuarios | Santa Fe{% endblock %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-white">Usuarios Registrados</h2>
+    <a href="{% url 'crear_cliente' %}"
+        class="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 px-4 py-2 rounded-xl font-bold transition">
+        + Agregar Usuario
+    </a>
+</div>
+
+<div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl">
+    <table class="w-full text-left">
+        <thead class="bg-zinc-950 text-zinc-500 text-xs uppercase tracking-wider">
+            <tr>
+                <th class="px-6 py-4">Usuario / Razón Social</th>
+                <th class="px-6 py-4">Identificación</th>
+                <th class="px-6 py-4">Fronteras</th>
+                <th class="px-6 py-4 text-right">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-800">
+            {% for cliente in clientes %}
+            <tr class="hover:bg-emerald-500/5 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                        <span class="text-white font-semibold">{{ cliente.nombre_usuario }}</span>
+                        <span class="text-xs text-zinc-500">{{ cliente.telefono }}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                    <span class="text-zinc-400">{{ cliente.tipo_identificacion }}:</span>
+                    {{cliente.numero_identificacion }}
+                </td>
+                <td class="px-6 py-4">
+                    <span
+                        class="bg-zinc-800 text-emerald-500 text-xs px-2 py-1 rounded-full border border-emerald-500/20">
+                        {{ cliente.fronteras.count }} Activas
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <a href="{% url 'detalle_cliente' cliente.id %}"
+                        class="text-emerald-500 hover:text-emerald-400 font-medium text-sm">
+                        Ver Detalles
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="px-6 py-10 text-center text-zinc-500 italic">
+                    No hay clientes registrados en el sistema.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,438 @@
+/* =========================================
+   1. VARIABLES Y COLORES
+   ========================================= */
+:root {
+    --green: #00443F;
+    --orange: #FF6700;
+    --text-main: #1A1A1A;
+    --eco-cream: #FDFBF7;
+    --gray-bg: #F4F4F4;
+}
+
+/* =========================================
+   2. CONFIGURACIÓN DE PÁGINA
+   ========================================= */
+@page {
+    size: letter;
+    margin: 1cm;
+    /* Reducido un milímetro más */
+}
+
+/* =========================================
+   3. TIPOGRAFÍA Y BASE
+   ========================================= */
+body {
+    font-family: 'Calibri', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text-main);
+    background-color: transparent;
+}
+
+/* =========================================
+   4. ESTRUCTURA PRINCIPAL
+   ========================================= */
+.invoice-container {
+    background-color: var(--eco-cream);
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Brecha general reducida */
+}
+
+.eco-paper-bg {
+    background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+}
+
+/* =========================================
+   5. HEADER Y ENCABEZADOS
+   ========================================= */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 2px;
+    /* Reducido al mínimo */
+}
+
+.logo-img {
+    width: 140px;
+    /* Logo más chico para ahorrar espacio arriba */
+}
+
+.user-id-badge {
+    margin-top: 0;
+    background: var(--gray-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border-left: 4px solid var(--green);
+}
+
+.user-id-badge span {
+    font-size: 10px;
+    font-weight: 700;
+    display: block;
+}
+
+.user-id-badge strong {
+    font-size: 14px;
+    color: var(--green);
+}
+
+.pay-summary-header {
+    display: flex;
+    gap: 10px;
+    text-align: right;
+}
+
+.total-box .value {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--green);
+    margin: 0;
+}
+
+.date-box .value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--orange);
+    margin: 0;
+}
+
+.label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #666;
+    margin: 0;
+}
+
+/* =========================================
+   6. GRID DE CONTENIDO Y TARJETAS
+   ========================================= */
+.main-content-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.8fr 1fr;
+    gap: 12px;
+    /* Brecha entre columnas al mínimo */
+}
+
+/* Contenedor de las columnas para controlar márgenes internos */
+.col,
+.col-center {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* Esto reemplaza el margin-bottom de las cards */
+}
+
+.card {
+    background: white;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.card-title {
+    font-size: 12px;
+    /* Mismo tamaño que la letra base */
+    padding: 3px 6px;
+    margin: 0;
+    border-bottom: 1px solid #EEE;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--green);
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 2px 6px;
+}
+
+.card-body p {
+    margin: 1px 0;
+    font-size: 12px;
+    /* TAMAÑO DE LETRA 12 MANTENIDO */
+}
+
+/* =========================================
+   7. TABLA DE COBROS
+   ========================================= */
+.billing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    /* TAMAÑO DE LETRA 12 MANTENIDO */
+}
+
+.billing-table th {
+    background: #EEE;
+    padding: 2px 4px;
+    /* Rellenos hiper-delgados */
+    text-align: left;
+}
+
+.billing-table td {
+    padding: 1px 4px;
+    /* Altura de fila al mínimo posible */
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.section-row td {
+    background: #F9F9F9;
+    font-weight: 700;
+    color: var(--green);
+    font-size: 10px;
+    /* Separadores ligeramente más pequeños */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 4px;
+}
+
+.total-row td {
+    background: var(--green);
+    color: white;
+    font-size: 12px;
+    /* Mantenido en 12 */
+    font-weight: 900;
+    padding: 3px 6px;
+}
+
+.mini-draw {
+    color: var(--orange);
+    width: 12px;
+    margin-right: 4px;
+}
+
+/* =========================================
+   8. GRÁFICO DE BARRAS
+   ========================================= */
+.chart-area {
+    padding-top: 2px;
+    background: #ffffff;
+    height: 85px;
+    /* Más aplastado para salvar espacio para la tabla */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bars-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 90%;
+    height: 55px;
+    /* Barras más cortas */
+    border-bottom: 2px solid var(--green);
+}
+
+.bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+    position: relative;
+}
+
+.bar-value {
+    font-size: 9px;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.bar-pill {
+    width: 20px;
+    background-color: #BDC3C7;
+    border-radius: 2px 2px 0 0;
+}
+
+.active-pill {
+    background-color: var(--green) !important;
+}
+
+.bar-month {
+    font-size: 9px;
+    color: var(--text-main);
+    text-transform: uppercase;
+    position: absolute;
+    bottom: -14px;
+    white-space: nowrap;
+}
+
+/* =========================================
+   9. COSTO UNITARIO
+   ========================================= */
+.cu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px 4px;
+}
+
+.cu-item {
+    font-size: 12px;
+    /* TAMAÑO DE LETRA 12 MANTENIDO */
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cu-item span {
+    display: block;
+    font-weight: 900;
+    color: var(--orange);
+    margin-bottom: 0;
+}
+
+.cu-total {
+    text-align: center;
+    font-weight: 700;
+    padding: 2px;
+    font-size: 12px;
+    /* TAMAÑO DE LETRA 12 MANTENIDO */
+    border-top: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+/* =========================================
+   10. FOOTER Y LEGALES
+   ========================================= */
+.footer-legal {
+    margin-top: 0;
+    border-top: 2px solid var(--green);
+    padding-top: 2px;
+}
+
+.legal-text {
+    background: #FFF5F0;
+    border-left: 4px solid var(--orange);
+    padding: 2px 6px;
+    font-size: 9px;
+    /* El texto legal siempre va en letra pequeña */
+    margin-bottom: 4px;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    font-size: 10px;
+}
+
+.contact-item i {
+    font-size: 12px;
+    margin-bottom: 1px;
+}
+
+.qr-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+}
+
+.qr-box {
+    text-align: center;
+    color: #CCC;
+    border: 1px dashed #DDD;
+    padding: 2px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.qr-box i {
+    font-size: 30px;
+    color: var(--green);
+    margin-bottom: 2px;
+}
+
+/* =========================================
+   11. CLASES UTILITARIAS Y EXTRAS
+   ========================================= */
+.green-bg {
+    background-color: var(--green);
+}
+
+.white-text {
+    color: white;
+}
+
+.orange-text {
+    color: var(--orange);
+}
+
+.green-text {
+    color: var(--green);
+}
+
+.orange-border {
+    border: 2px solid var(--orange);
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-xs {
+    font-size: 10px;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.bold-900 {
+    font-weight: 900;
+}
+
+.highlight-field {
+    background: #E8F0EE;
+    padding: 1px 3px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-top: 1px;
+}
+
+.dark-card {
+    background: var(--green);
+    color: white;
+    border: none;
+}
+
+.data-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    /* TAMAÑO DE LETRA 12 MANTENIDO */
+    padding: 1px 0;
+    border-bottom: 1px solid #F5F5F5;
+}
+
+/* =========================================
+   12. PREVENCIÓN DE CORTES (WEASYPRINT)
+   ========================================= */
+.card,
+.billing-table,
+.cu-grid,
+.chart-area,
+.footer-legal,
+tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}

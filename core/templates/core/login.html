@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'core/img/Isotipo_Claro.png' %}">
+
+    <meta property="og:title" content="Login | SANTA FE ENERGY">
+    <meta property="og:image" content="{% static 'core/img/Isotipo_Claro.png' %}">
+    <title>Login | SANTA FE ENERGY</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-zinc-950 flex items-center justify-center min-h-screen">
+
+    <div
+        class="w-full max-w-md bg-zinc-900 p-8 rounded-2xl shadow-2xl border border-zinc-800 ring-1 ring-emerald-500/10">
+
+        <div class="text-center mb-8">
+            <div class="flex flex-col items-center">
+                <div
+                    class="flex w-14 h-14 bg-emerald-500/10 rounded-2xl items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] border border-emerald-500/20 mb-2 transition-transform hover:scale-105">
+                    <img src="{% static 'core/img/Isotipo_Claro.png' %}" alt="Isotipo Claro"
+                        class="w-8 h-8 object-contain">
+                </div>
+
+                <h1 class="text-white font-black text-xl tracking-tighter italic uppercase">
+                    SANTA FE<span class="text-emerald-500"> usuario</span>
+                </h1>
+            </div>
+
+            <p class="text-zinc-500 text-sm mt-1">Experiencia en el sector energético SANTA FE ENERGY </p>
+
+        </div>
+
+        <form method="POST" id="loginForm" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div
+                class="text-emerald-400 text-sm bg-emerald-950/30 border border-emerald-500/20 p-3 rounded-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Credenciales incorrectas.
+            </div>
+            {% endif %}
+
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-2">Usuario</label>
+                <input type="text" name="username" required
+                    class="block w-full px-4 py-3 bg-zinc-800 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-zinc-500"
+                    placeholder="Usuario">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-2">Contraseña</label>
+                <input type="password" name="password" required
+                    class="block w-full px-4 py-3 bg-zinc-800 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-zinc-500"
+                    placeholder="••••••••">
+            </div>
+
+            <button type="submit" id="btnSubmit"
+                class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-500 active:scale-[0.98] transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2">
+                <span>Entrar</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const btn = document.getElementById('btnSubmit');
+
+        form.addEventListener('submit', () => {
+            btn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Autenticando...</span>
+            `;
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+        });
+    </script>
+</body>
+
+</html>
