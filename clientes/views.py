@@ -1,6 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Cliente, Frontera
+### clientes.views.py
+
+
+from django.shortcuts import render, redirect, get_object_or_404, redirect
+from .models import Cliente, Frontera, AceptacionTerminos
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+
+@login_required
+def aceptar_terminos(request):
+    if hasattr(request.user, 'registro_terminos'):
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        AceptacionTerminos.objects.create(
+            user=request.user,
+            nombre_usuario=request.user.username,
+            correo_asociado=request.user.email
+        )
+        return redirect('dashboard')
+
+    return render(request, 'clientes/aceptar_terminos.html')
+
 
 @login_required
 def lista_clientes(request):
@@ -74,6 +94,7 @@ def crear_cliente(request):
 
         # Creamos el registro en PostgreSQL
         Cliente.objects.create(
+            user=request.user, 
             nombre_usuario=nombre,
             tipo_identificacion=tipo_id,
             numero_identificacion=num_id,

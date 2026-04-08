@@ -4,26 +4,73 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'core/img/Isotipo_Claro.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'core/img/favicon.png' %}">
 
     <meta property="og:title" content="Login | SANTA FE ENERGY">
-    <meta property="og:image" content="{% static 'core/img/Isotipo_Claro.png' %}">
-    <title>Login | SANTA FE ENERGY</title>
+    <meta property="og:image" content="{% static 'core/img/favicon.png' %}">
+    <title>Iniciar sesión | SANTA FE ENERGY</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Raleway', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Animación suave para el degradado del fondo */
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animated-bg {
+            /* Degradado entre tonos oscuros (zinc) y esmeralda muy oscuro */
+            background: linear-gradient(-45deg, #3791ae, #054d3c, #797777, #064e3b);
+            background-size: 400% 400%;
+            animation: gradient-bg 10s ease infinite;
+        }
+
+        /* Capa del mosaico con el favicon */
+        .pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Ajusta el tamaño de los logos cambiando background-size */
+            background-image: url("{% static 'core/img/favicon.png' %}");
+            background-repeat: repeat;
+            background-size: 80px; 
+            opacity: 0.05; /* 0.05 a 0.1 suele verse más elegante que 0.2, pero puedes subirlo si lo prefieres */
+            pointer-events: none; /* Evita que el fondo interfiera con los clics */
+            z-index: 0;
+        }
+    </style>
 </head>
 
-<body class="bg-zinc-950 flex items-center justify-center min-h-screen">
+<body class="animated-bg flex items-center justify-center min-h-screen relative overflow-hidden">
 
-    <div
-        class="w-full max-w-md bg-zinc-900 p-8 rounded-2xl shadow-2xl border border-zinc-800 ring-1 ring-emerald-500/10">
+    <div class="pattern-overlay"></div>
+
+    <div class="relative z-10 w-full max-w-md bg-zinc-900/80 backdrop-blur-xl p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-zinc-700/50 ring-1 ring-emerald-500/20">
 
         <div class="text-center mb-8">
             <div class="flex flex-col items-center">
-                <div
-                    class="flex w-14 h-14 bg-emerald-500/10 rounded-2xl items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] border border-emerald-500/20 mb-2 transition-transform hover:scale-105">
-                    <img src="{% static 'core/img/Isotipo_Claro.png' %}" alt="Isotipo Claro"
-                        class="w-8 h-8 object-contain">
+                <div class="flex w-14 h-14 bg-emerald-500/10 rounded-2xl items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] border border-emerald-500/20 mb-2 transition-transform hover:scale-105">
+                    <img src="{% static 'core/img/favicon.png' %}" alt="Isotipo Claro" class="w-8 h-8 object-contain">
                 </div>
 
                 <h1 class="text-white font-black text-xl tracking-tighter italic uppercase">
@@ -31,41 +78,48 @@
                 </h1>
             </div>
 
-            <p class="text-zinc-500 text-sm mt-1">Experiencia en el sector energético SANTA FE ENERGY </p>
-
+            <p class="text-zinc-400 text-sm mt-1">Experiencia en el sector energético</p>
         </div>
 
         <form method="POST" id="loginForm" class="space-y-6">
             {% csrf_token %}
 
             {% if form.errors %}
-            <div
-                class="text-emerald-400 text-sm bg-emerald-950/30 border border-emerald-500/20 p-3 rounded-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div class="text-emerald-400 text-sm bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl flex items-center gap-2 backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Credenciales incorrectas.
             </div>
             {% endif %}
 
             <div>
-                <label class="block text-sm font-medium text-zinc-300 mb-2">Usuario</label>
+                <label class="block text-sm font-medium text-zinc-300 mb-2 tracking-wide">Usuario</label>
                 <input type="text" name="username" required
-                    class="block w-full px-4 py-3 bg-zinc-800 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-zinc-500"
-                    placeholder="Usuario">
+                    class="block w-full px-4 py-3 bg-zinc-950/50 border border-zinc-700/50 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder-zinc-600 shadow-inner"
+                    placeholder="Escribe tu usuario">
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-zinc-300 mb-2">Contraseña</label>
-                <input type="password" name="password" required
-                    class="block w-full px-4 py-3 bg-zinc-800 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-zinc-500"
-                    placeholder="••••••••">
+                <label class="block text-sm font-medium text-zinc-300 mb-2 tracking-wide">Contraseña</label>
+                <div class="relative">
+                    <input type="password" name="password" id="passwordInput" required
+                        class="block w-full px-4 py-3 pr-12 bg-zinc-950/50 border border-zinc-700/50 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder-zinc-600 shadow-inner"
+                        placeholder="••••••••">
+                    
+                    <button type="button" id="togglePassword" 
+                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-zinc-500 hover:text-emerald-500 transition-colors focus:outline-none">
+                        
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" id="btnSubmit"
-                class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-500 active:scale-[0.98] transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2">
+                class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white py-3 rounded-xl font-bold hover:from-emerald-500 hover:to-emerald-400 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 mt-4">
                 <span>Entrar</span>
             </button>
         </form>
@@ -85,6 +139,30 @@
             `;
             btn.disabled = true;
             btn.classList.add('opacity-70', 'cursor-not-allowed');
+        });
+
+        const passwordInput = document.getElementById('passwordInput');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        // SVGs para los estados del ojo
+        const iconEyeOpen = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        `;
+        const iconEyeClosed = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+        `;
+
+        togglePasswordBtn.addEventListener('click', () => {
+            // Verificamos si el input es tipo password o texto
+            const isPassword = passwordInput.type === 'password';
+            
+            // Alternamos el tipo de input
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            // Alternamos el icono
+            eyeIcon.innerHTML = isPassword ? iconEyeClosed : iconEyeOpen;
         });
     </script>
 </body>

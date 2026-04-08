@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.lista_clientes, name='lista_clientes'), # Este es el nombre clave
     path('nuevo/', views.crear_cliente, name='crear_cliente'),
     path('<int:cliente_id>/', views.detalle_cliente, name='detalle_cliente'),
+    path('aceptar-terminos/', views.aceptar_terminos, name='aceptar_terminos'),
 ]

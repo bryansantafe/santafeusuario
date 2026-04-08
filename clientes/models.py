@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Cliente(models.Model):
     TIPO_IDENTIFICACION_CHOICES = [
@@ -104,3 +106,13 @@ class Frontera(models.Model):
 
     def __str__(self):
         return f"{self.numero_contrato} - {self.operador_red}"
+
+class AceptacionTerminos(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='registro_terminos')
+    
+    nombre_usuario = models.CharField(max_length=255, verbose_name="Usuario que aceptó")
+    correo_asociado = models.EmailField(verbose_name="Correo en el momento de aceptación")
+    fecha_aceptacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha y hora")
+
+    def __str__(self):
+        return f"{self.nombre_usuario} - Aceptó: {self.fecha_aceptacion.strftime('%Y-%m-%d %H:%M')}"

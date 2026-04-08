@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente, Frontera
+from .models import Cliente, Frontera, AceptacionTerminos
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
@@ -11,3 +11,8 @@ class FronteraAdmin(admin.ModelAdmin):
     list_display = ('numero_factura', 'cliente', 'operador_red', 'nivel_tension', 'mercado')
     list_filter = ('operador_red', 'nivel_tension', 'mercado')
     search_fields = ('numero_factura', 'numero_contrato', 'cliente__nombre_usuario')
+
+@admin.register(AceptacionTerminos)
+class AceptacionTerminosAdmin(admin.ModelAdmin):
+    list_display = ('nombre_usuario', 'correo_asociado', 'fecha_aceptacion')
+    readonly_fields = ('fecha_aceptacion',) 
