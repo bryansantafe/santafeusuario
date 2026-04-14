@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from .choices import OPERADOR_CHOICES, DEPARTAMENTO_CHOICES 
 
 class Cliente(models.Model):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_cliente')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil_cliente', null=True, blank=True)
+    
     TIPO_IDENTIFICACION_CHOICES = [
         ('CC', 'Cédula de Ciudadanía'),
         ('NIT', 'NIT (Número de Identificación Tributaria)'),
@@ -11,7 +14,7 @@ class Cliente(models.Model):
     tipo_identificacion = models.CharField(max_length=3, choices=TIPO_IDENTIFICACION_CHOICES, default='NIT')
     numero_identificacion = models.CharField(max_length=25, unique=True, verbose_name="Número de Identificación")
     telefono = models.CharField(max_length=20, verbose_name="Teléfono")
-    correo_electronico = models.EmailField(verbose_name="Correo Electrónico")
+    correo_electronico = models.EmailField(unique=True, verbose_name="Correo Electrónico") 
     direccion_facturacion = models.TextField(verbose_name="Dirección de Facturación")
     fecha_register = models.DateTimeField(auto_now_add=True)
 
@@ -27,55 +30,6 @@ class Cliente(models.Model):
         return self.tipo_identificacion == 'CC'
 
 class Frontera(models.Model):
-    # --- LISTA DE OPERADORES DE RED (Extraídos de tu imagen) ---
-# --- LISTA DE OPERADORES DE RED (Extraídos del CSV resumen) ---
-    # --- LISTA DE OPERADORES DE RED ---
-    # Formato: ('Nombre exacto para cruzar con BD', 'Operador - Departamento')
-    OPERADOR_CHOICES = [
-        ('EPMD - EPM Mercado de Comercialización - ANTIOQUIA', 'EPM - ANTIOQUIA'),
-        ('ENID - ENELAR Mercado de Comercialización - ARAUCA', 'ENELAR - ARAUCA'),
-        ('EBPD - BAJO PUTUMAYO  Mercado de Comercialización - BAJO PUTUMAYO', 'EBP - BAJO PUTUMAYO'),
-        ('ENDD - ENEL Mercado de Comercialización - BOGOTA - CUNDINAMARCA', 'ENEL - BOGOTÁ'),
-        ('EBSD - EBSA Mercado de Comercialización - BOYACA', 'EBSA - BOYACÁ'),
-        ('CHCD - CHEC S.A. E.S.P. BIC Mercado de Comercialización - CALDAS', 'CHEC - CALDAS'),
-        ('EMID - EMCALI Mercado de Comercialización - CALI - YUMBO - PUERTO TEJADA', 'EMCALI - CALI'),
-        ('CQTD - ELECTROCAQUETA Mercado de Comercialización - CAQUETA', 'ELECTROCAQUETA - CAQUETÁ'),
-        ('CMMD - CARIBEMAR Mercado de Comercialización - CARIBE MAR', 'AFINIA - CARIBE MAR'),
-        ('CSID - AIR-E Mercado de Comercialización - CARIBE SOL', 'AIRE - CARIBE SOL'),
-        ('EEPD - EEP Mercado de Comercialización - CARTAGO', 'EMCARTAGO - CARTAGO'),
-        ('CASD - ENERCA Mercado de Comercialización - CASANARE', 'ENERCA - CASANARE'),
-        ('CEOD - CEO S.A.S E.S.P. Mercado de Comercialización - CAUCA', 'CEO - CAUCA'),
-        ('EDPD - DISPAC S.A. E.S.P. Mercado de Comercialización - CHOCO', 'DISPAC - CHOCÓ'),
-        ('EGVD - ENERGUAVIARE Mercado de Comercialización - GUAVIARE', 'ENERGUAVIARE - GUAVIARE'),
-        ('HLAD - ELECTROHUILA Mercado de Comercialización - HUILA', 'ELECTROHUILA - HUILA'),
-        ('EMSD - EMSA Mercado de Comercialización - META', 'EMSA - META'),
-        ('CDND - CEDENAR Mercado de Comercialización - NARIÑO', 'CEDENAR - NARIÑO'),
-        ('CNSD - CENS Mercado de Comercialización - NORTE DE SANTANDER', 'CENS - NORTE DE SANTANDER'),
-        ('EEPD - EEP Mercado de Comercialización - PEREIRA', 'EEP - PEREIRA'),
-        ('EMED - EMEE Mercado de Comercialización - POPAYAN - PURACE', 'EMEE - POPAYÁN'),
-        ('EPTD - PUTUMAYO Mercado de Comercialización - PUTUMAYO', 'EPT - PUTUMAYO'),
-        ('EDQD - EDEQ Mercado de Comercialización - QUINDIO', 'EDEQ - QUINDÍO'),
-        ('RTQD - RUITOQUE Mercado de Comercialización - RUITOQUE', 'RUITOQUE - RUITOQUE'),
-        ('ESSD - ESSA Mercado de Comercialización - SANTANDER', 'ESSA - SANTANDER'),
-        ('EPSD - CELSIA COLOMBIA Mercado de Comercialización - TOLIMA', 'CELSIA - TOLIMA'),
-        ('CETD - CETSA Mercado de Comercialización - TULUA', 'CETSA - TULUÁ'),
-        ('EPSD - CELSIA COLOMBIA Mercado de Comercialización - VALLE DEL CAUCA', 'CELSIA - VALLE DEL CAUCA'),
-    ]
-
-    # --- LISTA DE DEPARTAMENTOS DE COLOMBIA ---
-    DEPARTAMENTO_CHOICES = [
-        ('AMAZONAS', 'Amazonas'), ('ANTIOQUIA', 'Antioquia'), ('ARAUCA', 'Arauca'),
-        ('ATLANTICO', 'Atlántico'), ('BOGOTA', 'Bogotá D.C.'), ('BOLIVAR', 'Bolívar'),
-        ('BOYACA', 'Boyacá'), ('CALDAS', 'Caldas'), ('CAQUETA', 'Caquetá'),
-        ('CASANARE', 'Casanare'), ('CAUCA', 'Cauca'), ('CESAR', 'Cesar'),
-        ('CHOCO', 'Chocó'), ('CORDOBA', 'Córdoba'), ('CUNDINAMARCA', 'Cundinamarca'),
-        ('GUAINIA', 'Guainía'), ('GUAVIARE', 'Guaviare'), ('HUILA', 'Huila'),
-        ('GUAJIRA', 'La Guajira'), ('MAGDALENA', 'Magdalena'), ('META', 'Meta'),
-        ('NARINO', 'Nariño'), ('NORTE_SANTANDER', 'Norte de Santander'), ('PUTUMAYO', 'Putumayo'),
-        ('QUINDIO', 'Quindío'), ('RISARALDA', 'Risaralda'), ('SAN_ANDRES', 'San Andrés'),
-        ('SANTANDER', 'Santander'), ('SUCRE', 'Sucre'), ('TOLIMA', 'Tolima'),
-        ('VALLE_CAUCA', 'Valle del Cauca'), ('VAUPES', 'Vaupés'), ('VICHADA', 'Vichada'),
-    ]
 
     MERCADO_CHOICES = [('R', 'Regulado'), ('NR', 'No Regulado')]
     TENSION_CHOICES = [

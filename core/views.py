@@ -3,17 +3,21 @@ from django.db.models import Sum, Count
 from django.db.models.functions import ExtractYear
 from data.models import Agente, Recurso
 from clientes.models import Cliente, Frontera
- # Ajusta al nombre de tu app
+# Ajusta al nombre de tu app
 import json
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
+def es_staff(user):
+    return user.is_staff
+
 @login_required
+@user_passes_test(es_staff, login_url='/reportes/')
 def dashboard_index(request):
-    # 1. Totales para las Cards
+    ## Totales para las Cards
     total_agentes = Agente.objects.count()
     total_recursos = Recurso.objects.count()
     capacidad_total = Recurso.objects.aggregate(total=Sum('capacidad_efectiva_neta'))['total'] or 0
 
-    # 2. Datos para Gráfica de Torta (Capacidad por Tecnología)
+    ## Datos para Gráfica de Torta (Capacidad por Tecnología)
     datos_tech = Recurso.objects.values('tipo_tecnologia').annotate(
         total=Sum('capacidad_efectiva_neta')
     ).order_by('-total')
@@ -44,7 +48,9 @@ def dashboard_index(request):
 
     }
     return render(request, 'core/index.html', context)
+    
 @login_required
+@user_passes_test(es_staff, login_url='/reportes/')
 def agente_detalle(request, agente_id):
     agente = get_object_or_404(Agente, agente_id=agente_id)
     # Obtenemos los recursos usando la relación reversa
@@ -58,6 +64,7 @@ def agente_detalle(request, agente_id):
     })
 # DEBE LLAMARSE IGUAL QUE EN EL URLS.PY
 @login_required
+@user_passes_test(es_staff, login_url='/reportes/')
 def dashboard_index(request): 
     clientes = Cliente.objects.all().order_by('-fecha_register')[:3]
     print(f"DEBUG: Se encontraron {clientes.count()} clientes") # <--- Mira si esto sale en la terminal

@@ -4,58 +4,91 @@
 {% block page_title %}Gestión de Usuarios{% endblock %}
 
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold text-white">Usuarios Registrados</h2>
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Usuarios Registrados</h2>
+        <p class="text-sm text-slate-500 dark:text-zinc-400 mt-1">Administra los accesos y los perfiles de los clientes del sistema.</p>
+    </div>
     <a href="{% url 'crear_cliente' %}"
-        class="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 px-4 py-2 rounded-xl font-bold transition">
-        + Agregar Usuario
+        class="group inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg hover:shadow-emerald-500/25 hover:-translate-y-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:rotate-90" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Agregar Usuario
     </a>
 </div>
 
-<div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl">
-    <table class="w-full text-left">
-        <thead class="bg-zinc-950 text-zinc-500 text-xs uppercase tracking-wider">
-            <tr>
-                <th class="px-6 py-4">Usuario / Razón Social</th>
-                <th class="px-6 py-4">Identificación</th>
-                <th class="px-6 py-4">Fronteras</th>
-                <th class="px-6 py-4 text-right">Acciones</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-800">
-            {% for cliente in clientes %}
-            <tr class="hover:bg-emerald-500/5 transition-colors">
-                <td class="px-6 py-4">
-                    <div class="flex flex-col">
-                        <span class="text-white font-semibold">{{ cliente.nombre_usuario }}</span>
-                        <span class="text-xs text-zinc-500">{{ cliente.telefono }}</span>
-                    </div>
-                </td>
-                <td class="px-6 py-4 text-sm">
-                    <span class="text-zinc-400">{{ cliente.tipo_identificacion }}:</span>
-                    {{cliente.numero_identificacion }}
-                </td>
-                <td class="px-6 py-4">
-                    <span
-                        class="bg-zinc-800 text-emerald-500 text-xs px-2 py-1 rounded-full border border-emerald-500/20">
-                        {{ cliente.fronteras.count }} Activas
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <a href="{% url 'detalle_cliente' cliente.id %}"
-                        class="text-emerald-500 hover:text-emerald-400 font-medium text-sm">
-                        Ver Detalles
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="px-6 py-10 text-center text-zinc-500 italic">
-                    No hay clientes registrados en el sistema.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-xl transition-colors duration-300">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50 dark:bg-zinc-950/50 text-slate-500 dark:text-zinc-400 text-xs uppercase tracking-widest border-b border-slate-200 dark:border-zinc-800">
+                <tr>
+                    <th class="px-6 py-5 font-bold">Usuario / Razón Social</th>
+                    <th class="px-6 py-5 font-bold">Identificación</th>
+                    <th class="px-6 py-5 font-bold">Fronteras</th>
+                    <th class="px-6 py-5 text-right font-bold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-zinc-800/50">
+                {% for cliente in clientes %}
+                <tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/30 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shadow-inner">
+                                {{ cliente.nombre_usuario|make_list|first|upper }}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-slate-800 dark:text-white font-bold text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{{ cliente.nombre_usuario }}</span>
+                                <span class="text-xs text-slate-500 dark:text-zinc-500 flex items-center gap-1 mt-0.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-slate-400 dark:text-zinc-600" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                    {{ cliente.telefono }}
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-slate-200 dark:border-transparent">
+                                {{ cliente.tipo_identificacion }}
+                            </span>
+                            <span class="text-sm text-slate-700 dark:text-zinc-300 font-mono">{{ cliente.numero_identificacion }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-500/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            {{ cliente.fronteras.count }} Activas
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{% url 'detalle_cliente' cliente.id %}"
+                            class="inline-flex items-center gap-1 text-slate-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-bold text-xs uppercase tracking-widest transition-colors bg-slate-50 dark:bg-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-zinc-700">
+                            Gestionar
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-16 text-center">
+                        <div class="flex flex-col items-center justify-center space-y-3">
+                            <div class="h-16 w-16 bg-slate-50 dark:bg-zinc-800/50 rounded-full flex items-center justify-center text-slate-400 dark:text-zinc-500 mb-2 border border-slate-100 dark:border-transparent">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <p class="text-slate-800 dark:text-zinc-300 text-base font-bold">No hay usuarios registrados aún.</p>
+                            <p class="text-slate-500 dark:text-zinc-500 text-sm">Empieza agregando tu primer cliente al sistema.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

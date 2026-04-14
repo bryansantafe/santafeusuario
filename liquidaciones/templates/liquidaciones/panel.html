@@ -1,12 +1,12 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="min-h-screen bg-zinc-950 text-zinc-100 p-4 md:p-8 font-sans selection:bg-emerald-500/30">
+<div class="text-slate-800 dark:text-zinc-100 p-4 md:p-8 font-sans selection:bg-emerald-500/30 transition-colors duration-300">
 
     <div class="max-w-4xl mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <a href="{% url 'lista_clientes' %}"
-                class="inline-flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors text-sm font-medium mb-2 group">
+                class="inline-flex items-center gap-2 text-slate-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm font-bold uppercase tracking-widest mb-2 group">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:-translate-x-1"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -14,20 +14,17 @@
                 </svg>
                 Volver a la lista de clientes
             </a>
-            <h1 class="text-3xl font-black text-white tracking-tight">Panel de Fronteras</h1>
-            <p class="text-sm text-zinc-500 mt-1">Selecciona una frontera para gestionar su contrato o liquidar el
-                consumo.</p>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Panel de Fronteras</h1>
+            <p class="text-sm text-slate-500 dark:text-zinc-500 mt-1">Selecciona una frontera para gestionar su contrato o liquidar el consumo.</p>
         </div>
 
         {% if contrato %}
-        <div
-            class="inline-flex items-center gap-3 bg-zinc-900/80 border border-zinc-800 px-4 py-2 rounded-full backdrop-blur-sm">
+        <div class="inline-flex items-center gap-3 bg-white/80 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 px-4 py-2 rounded-full backdrop-blur-sm shadow-sm dark:shadow-none">
             <span class="relative flex h-3 w-3">
-                <span
-                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
             </span>
-            <span class="text-xs font-bold text-zinc-300 uppercase tracking-wider">
+            <span class="text-xs font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-wider">
                 Operador: {{ contrato.frontera.get_operador_red_display }}
             </span>
         </div>
@@ -35,46 +32,36 @@
     </div>
 
     <div class="max-w-4xl mx-auto space-y-6">
-        <div class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50 rounded-2xl p-6 shadow-xl">
+        <div class="bg-white/80 dark:bg-zinc-900/50 backdrop-blur-md border border-slate-200 dark:border-zinc-800/50 rounded-2xl p-6 shadow-sm dark:shadow-xl transition-colors duration-300">
             <form method="GET" action="." class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Cliente</label>
+                    <label class="text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider ml-1">Cliente</label>
                     <div class="relative">
                         <select name="usuario" onchange="this.form.submit()"
-                            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-4 pr-10 py-3 text-sm text-white appearance-none outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl pl-4 pr-10 py-3 text-sm text-slate-900 dark:text-white appearance-none outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer shadow-inner font-semibold">
                             <option value="">-- Seleccione Cliente --</option>
                             {% for c in clientes %}
-                            <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.nombre_usuario }}
-                            </option>
+                            <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.nombre_usuario }}</option>
                             {% endfor %}
                         </select>
-                        <div
-                            class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-zinc-500">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400 dark:text-zinc-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Frontera</label>
+                    <label class="text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider ml-1">Frontera</label>
                     <div class="relative">
                         <select name="frontera" onchange="this.form.submit()"
-                            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-4 pr-10 py-3 text-sm text-white appearance-none outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer">
+                            class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl pl-4 pr-10 py-3 text-sm text-slate-900 dark:text-white appearance-none outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer shadow-inner font-semibold">
                             <option value="">-- Seleccione Frontera --</option>
                             {% for f in fronteras %}
-                            <option value="{{ f.id }}" {% if f.is_selected %}selected{% endif %}>{{ f.numero_factura }}
-                            </option>
+                            <option value="{{ f.id }}" {% if f.is_selected %}selected{% endif %}>{{ f.numero_factura }}</option>
                             {% endfor %}
                         </select>
-                        <div
-                            class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-zinc-500">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400 dark:text-zinc-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
                     </div>
                 </div>
@@ -82,64 +69,42 @@
         </div>
 
         {% if frontera_id %}
-        <div
-            class="bg-zinc-900/30 border border-zinc-800/50 rounded-3xl p-12 flex flex-col items-center justify-center text-center">
-
-            <div
-                class="w-20 h-20 mb-6 rounded-full flex items-center justify-center shadow-inner {% if no_contrato %}bg-amber-500/10 text-amber-500{% else %}bg-emerald-500/10 text-emerald-500{% endif %}">
+        <div class="bg-white/50 dark:bg-zinc-900/30 border border-slate-200 dark:border-zinc-800/50 rounded-3xl p-12 flex flex-col items-center justify-center text-center shadow-sm transition-colors duration-300">
+            <div class="w-20 h-20 mb-6 rounded-full flex items-center justify-center shadow-inner {% if no_contrato %}bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-transparent{% else %}bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border border-emerald-200 dark:border-transparent{% endif %}">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     {% if no_contrato %}
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     {% else %}
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     {% endif %}
                 </svg>
             </div>
 
             {% if no_contrato %}
-            <h3 class="text-xl font-bold text-white mb-2">Frontera sin Contrato</h3>
-            <p class="text-zinc-500 max-w-md mx-auto text-sm mb-8">Esta frontera no tiene un contrato configurado. Debes
-                crear uno antes de poder liquidar consumos.</p>
-
-            <a href="{% url 'gestionar_contrato' %}?frontera={{ frontera_id }}"
-                class="bg-amber-500 text-amber-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20 px-8 py-4 rounded-xl font-bold transition-all inline-flex items-center gap-2">
+            <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2">Frontera sin Contrato</h3>
+            <p class="text-slate-500 dark:text-zinc-500 max-w-md mx-auto text-sm mb-8 font-medium">Esta frontera no tiene un contrato configurado. Debes crear uno antes de poder liquidar consumos.</p>
+            <a href="{% url 'gestionar_contrato' %}?frontera={{ frontera_id }}" class="bg-amber-500 text-amber-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20 px-8 py-4 rounded-xl font-bold transition-all inline-flex items-center gap-2">
                 Crear Contrato y Componentes
             </a>
-
             {% else %}
-            <h3 class="text-xl font-bold text-white mb-2">Contrato Activo</h3>
-            <p class="text-zinc-500 max-w-md mx-auto text-sm mb-8">El contrato para esta frontera está configurado
-                correctamente. Ya puedes proceder a liquidar el mes que desees.</p>
-
-            <div class="flex gap-4 justify-center">
-                <a href="{% url 'gestionar_contrato' %}?frontera={{ frontera_id }}"
-                    class="bg-zinc-800 text-white hover:bg-zinc-700 px-6 py-4 rounded-xl font-bold transition-all">
+            <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2">Contrato Activo</h3>
+            <p class="text-slate-500 dark:text-zinc-500 max-w-md mx-auto text-sm mb-8 font-medium">El contrato para esta frontera está configurado correctamente. Ya puedes proceder a liquidar el mes que desees.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'gestionar_contrato' %}?frontera={{ frontera_id }}" class="bg-slate-200 dark:bg-zinc-800 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-zinc-700 px-6 py-4 rounded-xl font-bold transition-all text-center">
                     Modificar Contrato
                 </a>
-                <a href="{% url 'detalle_consumo' %}?frontera={{ frontera_id }}"
-                    class="bg-emerald-500 text-emerald-950 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 px-8 py-4 rounded-xl font-black transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                        </path>
-                    </svg>
+                <a href="{% url 'detalle_consumo' %}?frontera={{ frontera_id }}" class="bg-emerald-600 dark:bg-emerald-500 text-white dark:text-emerald-950 hover:bg-emerald-500 dark:hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 px-8 py-4 rounded-xl font-black transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     LIQUIDAR CONSUMO
                 </a>
             </div>
             {% endif %}
-
         </div>
         {% else %}
-        <div
-            class="bg-zinc-900/30 border border-zinc-800/50 rounded-3xl p-12 flex flex-col items-center justify-center min-h-[300px] text-center">
-            <p class="text-zinc-500 max-w-md mx-auto text-sm">Selecciona un cliente y una frontera en la parte superior
-                para comenzar.</p>
+        <div class="bg-slate-50 dark:bg-zinc-900/30 border border-slate-200 dark:border-zinc-800/50 rounded-3xl p-12 flex flex-col items-center justify-center min-h-[300px] text-center shadow-inner dark:shadow-none transition-colors duration-300">
+            <p class="text-slate-500 dark:text-zinc-500 max-w-md mx-auto text-sm font-bold uppercase tracking-widest">Selecciona un cliente y una frontera en la parte superior para comenzar.</p>
         </div>
         {% endif %}
-
     </div>
 </div>
 {% endblock %}

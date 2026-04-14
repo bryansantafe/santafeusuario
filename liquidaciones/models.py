@@ -1,12 +1,7 @@
 from django.db import models
-# Importamos Frontera desde tu otra app de clientes
 from clientes.models import Frontera 
 
 class Periodo(models.Model):
-    """
-    Representa un mes calendario. Aquí se centralizan los índices 
-    económicos nacionales (IPC, IPP) para que no tengas que repetirlos.
-    """
     fecha_mes = models.DateField(unique=True, verbose_name="Mes/Año (Día 1)")
     valor_ipc = models.DecimalField(max_digits=12, decimal_places=4, default=0, verbose_name="IPC del Mes")
     valor_ipp = models.DecimalField(max_digits=12, decimal_places=4, default=0, verbose_name="IPP del Mes")
@@ -20,16 +15,11 @@ class Periodo(models.Model):
         return self.fecha_mes.strftime('%m/%Y')
 
 class Contrato(models.Model):
-    """
-    Contrato comercial con el cliente. Contiene los precios base 
-    y los índices de referencia al momento de la firma.
-    """
     frontera = models.ForeignKey(Frontera, on_delete=models.CASCADE, related_name='contratos')
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField(null=True, blank=True)
-    tipo_pld = models.CharField(max_length=20, default='FIJO') # FIJO, BOLSA, FORMULA
+    tipo_pld = models.CharField(max_length=20, default='FIJO')
     
-    # Valores base para el cálculo de indexación futura
     precio_g_base = models.DecimalField(max_digits=12, decimal_places=4, default=0)
     precio_c_base = models.DecimalField(max_digits=12, decimal_places=4, default=0)
     ipp_base = models.DecimalField(max_digits=12, decimal_places=4, default=1.0)
@@ -42,12 +32,20 @@ class ComponenteG(models.Model):
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
     valor_base = models.DecimalField(max_digits=12, decimal_places=4)
-    # Mantenemos estos campos porque tu view gestionar_contrato los usa
-    tipo_indice = models.CharField(max_length=10, null=True, blank=True) # IPC o IPP
+    tipo_indice = models.CharField(max_length=10, null=True, blank=True) 
     fecha_indice = models.DateField(null=True, blank=True)
     valor_indice = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
-    # Resultado de la fórmula: Base * (Indice Mes / Indice Contrato)
     valor_indexado = models.DecimalField(max_digits=12, decimal_places=4, default=0)
+
+    def save(self, *args, **kwargs):
+        if self.tipo_indice and self.periodo and self.contrato:
+            numerador = self.periodo.valor_ipp if self.tipo_indice == 'IPP' else self.periodo.valor_ipc
+            denominador = self.contrato.ipp_base if self.tipo_indice == 'IPP' else self.contrato.ipc_base
+            
+            if denominador != 0:
+                self.valor_indice = numerador
+                self.valor_indexado = self.valor_base * (numerador / denominador)
+        super().save(*args, **kwargs)
 
 class ComponenteC(models.Model):
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
@@ -58,7 +56,19 @@ class ComponenteC(models.Model):
     valor_indice = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     valor_indexado = models.DecimalField(max_digits=12, decimal_places=4, default=0)
 
-# COMPONENTES REGULADOS: Dependen del Periodo Y del Operador de Red
+    def save(self, *args, **kwargs):
+        if self.tipo_indice and self.periodo and self.contrato:
+            numerador = self.periodo.valor_ipp if self.tipo_indice == 'IPP' else self.periodo.valor_ipc
+            denominador = self.contrato.ipp_base if self.tipo_indice == 'IPP' else self.contrato.ipc_base
+            
+            if denominador != 0:
+                self.valor_indice = numerador
+                self.valor_indexado = self.valor_base * (numerador / denominador)
+        super().save(*args, **kwargs)
+
+
+# --- COMPONENTES RESTAURADOS ---
+
 class ComponenteD(models.Model):
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
     operador_red = models.CharField(max_length=100)
@@ -81,16 +91,18 @@ class ComponenteR(models.Model):
     operador_red = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=12, decimal_places=4)
 
+
+# --- CONSUMOS ---
+
 class ConsumoHorario(models.Model):
     frontera = models.ForeignKey(Frontera, on_delete=models.CASCADE)
     fecha = models.DateField()
-    hora = models.IntegerField() # 1 a 24
+    hora = models.IntegerField() 
     consumo_activo = models.DecimalField(max_digits=12, decimal_places=4)
     consumo_reactivo = models.DecimalField(max_digits=12, decimal_places=4)
     es_estimado = models.BooleanField(default=False)
 
     class Meta:
-        # Indexamos para que las gráficas y tablas carguen instantáneamente
         indexes = [
             models.Index(fields=['frontera', 'fecha']),
         ]
