@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" class="light"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Santa Fe Energy{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/Isotipo_Claro.png' %}">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // ¡MUY IMPORTANTE! Habilita el toggle manual
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Raleway', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <style>
+        /* Adaptación del active state para modo claro y oscuro */
+        .nav-link.active {
+            border-left: 4px solid #10b981;
+        }
+        html.dark .nav-link.active {
+            background-color: #18181b; /* zinc-900 */
+            color: #10b981;
+        }
+        html:not(.dark) .nav-link.active {
+            background-color: #ecfdf5; /* emerald-50 */
+            color: #059669; /* emerald-600 */
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-700 dark:bg-zinc-950 dark:text-zinc-300 antialiased flex h-screen overflow-hidden transition-colors duration-300">
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800 flex flex-col transition-all duration-300 ease-in-out -translate-x-full md:relative md:translate-x-0 shadow-lg md:shadow-none">
+
+        <div class="p-6 flex items-center justify-between">
+            <a href="{% url 'core:dashboard' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div class="w-10 h-10 overflow-hidden rounded-xl border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                    <img src="{% static 'img/isotipo-claro.png' %}" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <span class="text-slate-900 dark:text-white font-black text-xl tracking-tighter italic uppercase">
+                    SANTA FE <span class="text-emerald-600 dark:text-emerald-500">USUARIO</span>
+                </span>
+            </a>
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            {% if request.user.is_staff %}
+                <a href="{% url 'core:dashboard' %}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-emerald-700 dark:hover:text-white font-medium text-slate-600 dark:text-zinc-400 nav-link {% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}">
+                    Panel Principal
+                </a>
+                <a href="{% url 'clientes:lista_clientes' %}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-emerald-700 dark:hover:text-white font-medium text-slate-600 dark:text-zinc-400 nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
+                    Usuarios
+                </a>
+                <a href="{% url 'liquidaciones:modulo_liquidaciones' %}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-emerald-700 dark:hover:text-white font-medium text-slate-600 dark:text-zinc-400 nav-link {% if 'modulo_liquidaciones' in request.resolver_match.url_name %}active{% endif %}">
+                    Liquidaciones
+                </a>
+            {% else %}
+            <a href="/reportes/" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-emerald-700 dark:hover:text-white font-medium text-slate-600 dark:text-zinc-400">
+                Mis Reportes (Dashboard)
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-zinc-800 space-y-2">
+            <a href="{% url 'clientes:cambiar_password' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium text-slate-500 dark:text-zinc-400 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                Cambiar Contraseña
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-500 font-medium text-slate-500 dark:text-zinc-500 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="h-16 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between px-6 bg-white/80 dark:bg-zinc-950/50 backdrop-blur-md sticky top-0 z-10 transition-colors duration-300">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="p-2 text-slate-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <span class="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-zinc-500">
+                    {% block page_title %}Panel Principal{% endblock %}
+                </span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" type="button" class="text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 focus:outline-none rounded-lg text-sm p-2.5 transition-colors">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+
+                {% if request.user.is_staff or request.user.is_superuser %}
+                <a href="/admin/" target="_blank"
+                    class="hidden md:inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-colors shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Admin
+                </a>
+                <div class="w-px h-5 bg-slate-300 dark:bg-zinc-700 hidden md:block mx-1"></div>
+                {% endif %}
+                <div class="hidden md:flex items-center gap-2 text-slate-700 dark:text-white">
+                    <span class="text-sm font-medium">
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ request.user.username|default:"Invitado" }}</span>
+                    </span>
+                </div>
+
+                <div class="w-px h-5 bg-slate-300 dark:bg-gray-600 hidden md:block"></div>
+
+                <div class="hidden md:flex items-center gap-2 text-slate-500 dark:text-gray-300">
+                    <span id="reloj-vivo" class="font-mono text-emerald-600 dark:text-emerald-400 font-bold">--:--</span>
+                </div>
+            </div>
+            <script src="{% static 'js/reloj.js' %}"></script>
+        </header>
+
+        <div class="p-4 md:p-8 space-y-8">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            } else {
+                sidebar.classList.toggle('md:hidden');
+            }
+        }
+        document.getElementById('sidebar-overlay').onclick = toggleSidebar;
+
+        // Lógica del Botón Toggle Dark/Light Mode
+        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        var themeToggleBtn = document.getElementById('theme-toggle');
+
+        themeToggleBtn.addEventListener('click', function() {
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

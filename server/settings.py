@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-LOGIN_REDIRECT_URL = 'dashboard' # Nombre de la ruta de tu dashboard
+LOGIN_REDIRECT_URL = 'core:dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,7 +33,8 @@ SECRET_KEY = 'django-insecure-_h(ojp40_a39wk^e_8@+1up+dtr)f9#+x6oa^3%*b-$aqu9dnq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['santafe-usuario.com', 'www.santafe-usuario.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,7 +74,7 @@ ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,10 +135,25 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+import os
+# settings.py
+
+STATIC_URL = '/static/'
+
+# Esta es la carpeta donde se RECOLECTAN todos los archivos para producción
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Esta es la lista de carpetas donde Django buscará archivos originales
 STATICFILES_DIRS = [
-    BASE_DIR / "static", 
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+
+# Confiar en el candadito SSL de Nginx Proxy Manager
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Dominios autorizados para enviar formularios (Login)
+CSRF_TRUSTED_ORIGINS = ['https://santafe-usuario.com', 'https://www.santafe-usuario.com']
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

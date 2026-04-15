@@ -1,0 +1,318 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/detalle_consumo.css' %}">
+
+<div class="max-w-7xl mx-auto p-4 md:p-8 text-slate-800 dark:text-zinc-200 transition-colors duration-300">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-6 animate-fade-in">
+        <div>
+            <a href="{% url 'liquidaciones:modulo_liquidaciones' %}?usuario={{ frontera.cliente.id }}&frontera={{ frontera.id }}"
+                class="inline-flex items-center text-emerald-600 dark:text-emerald-500 text-sm font-bold uppercase tracking-widest hover:text-emerald-700 dark:hover:text-emerald-400 hover:translate-x-1 transition-transform mb-2">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Volver al Panel
+            </a>
+            <h1 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mt-1 tracking-tight">Detalle de Liquidación</h1>
+            <p class="text-slate-500 dark:text-zinc-400 flex items-center mt-2 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                Frontera: <span class="text-slate-800 dark:text-zinc-300 ml-1 font-mono">{{ frontera.numero_factura }}</span>
+            </p>
+            <p class="text-slate-500 dark:text-zinc-400 flex items-center mt-2 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                Nivel de Tensión: <span class="text-slate-800 dark:text-zinc-300 ml-1 font-mono">{{ frontera.nivel_tension }}</span>
+            </p>
+        </div>
+
+        <form method="GET" class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-md dark:shadow-lg transition-colors hover:border-emerald-500/50">
+            <input type="hidden" name="frontera" value="{{ frontera.id }}">
+            <label class="text-[11px] font-black text-slate-500 dark:text-zinc-400 uppercase tracking-widest block mb-2 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Mes a Liquidar
+            </label>
+            <input type="month" name="fecha" value="{{ fecha_str }}" onchange="this.form.submit()"
+                class="bg-slate-50 dark:bg-zinc-950 border border-slate-300 dark:border-zinc-700 rounded-xl px-4 py-2 text-slate-900 dark:text-white font-bold w-full md:w-auto focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 outline-none transition-all cursor-pointer">
+        </form>
+    </div>
+
+    {% if fecha_str %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-white to-slate-50 dark:from-zinc-900 dark:to-zinc-900/50 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm dark:shadow-lg hover:-translate-y-1 hover:border-emerald-500/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="flex justify-between items-start">
+                <span class="text-[10px] font-black text-emerald-700 dark:text-emerald-500 uppercase tracking-widest bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-transparent">Energía del Mes</span>
+                <svg class="w-5 h-5 text-slate-400 dark:text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <h2 class="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mt-4 tracking-tighter">
+                {{ total_energia|floatformat:2 }} <span class="text-xl text-slate-400 dark:text-zinc-500 font-bold">kWh</span>
+            </h2>
+            <div class="mt-4 flex items-center text-xs font-bold text-slate-500 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-950/50 rounded-xl p-2.5 border border-slate-200 dark:border-zinc-800/50">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-zinc-500 mr-2"></span>
+                Reactiva: <strong class="text-slate-700 dark:text-zinc-300 ml-1 font-mono">{{ total_reactiva|floatformat:2 }} kVArh</strong>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-gradient-to-br from-white to-slate-50 dark:from-zinc-900 dark:to-zinc-900/50 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm dark:shadow-lg animate-fade-in transition-colors duration-300" style="animation-delay: 0.2s;">
+            <h3 class="text-slate-800 dark:text-white font-black mb-4 flex items-center text-lg">
+                <svg class="w-5 h-5 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Componentes del Costo Unitario (CU)
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                {% for nombre, valor in componentes.items %}
+                <div class="group bg-slate-50 dark:bg-zinc-950 p-4 rounded-2xl border border-slate-200 dark:border-zinc-800/80 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 hover:bg-emerald-50/50 dark:hover:bg-zinc-900 transition-all duration-300 shadow-sm dark:shadow-none">
+                    <p class="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1 group-hover:text-emerald-700 dark:group-hover:text-zinc-400 transition-colors">{{ nombre }}</p>
+                    <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 flex items-start font-mono">
+                        <span class="text-sm mr-0.5 mt-0.5 opacity-70">$</span>{{ valor|floatformat:2 }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="relative overflow-hidden bg-gradient-to-r from-emerald-50 to-emerald-100/50 dark:from-emerald-900/40 dark:to-emerald-600/10 border border-emerald-200 dark:border-emerald-500/30 p-8 rounded-3xl mb-12 flex flex-col md:flex-row justify-between items-center shadow-md dark:shadow-[0_0_30px_rgba(16,185,129,0.05)] animate-fade-in group hover:border-emerald-400 dark:hover:border-emerald-500/50 transition-colors" style="animation-delay: 0.3s;">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+
+        <div class="mb-4 md:mb-0 relative z-10 text-center md:text-left">
+            <h3 class="text-emerald-800 dark:text-emerald-400 font-black text-2xl tracking-tight uppercase">Total Liquidado</h3>
+            <div class="mt-2 inline-block bg-white/60 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/50 rounded-lg px-3 py-1 shadow-sm dark:shadow-none">
+                <p class="text-emerald-700 dark:text-emerald-200/70 text-sm font-black font-mono">Costo Unitario: ${{ cu_variable|floatformat:2 }}</p>
+            </div>
+        </div>
+        <div class="text-center md:text-right relative z-10">
+            <p class="text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter drop-shadow-md">
+                <span class="text-3xl text-emerald-500 align-top mr-1 font-sans">$</span><span class="font-mono">{{ total_a_facturar|floatformat:0 }}</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="space-y-8 animate-fade-in" style="animation-delay: 0.4s;">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm dark:shadow-lg transition-colors duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center mr-3 border border-emerald-200 dark:border-emerald-500/20">
+                    <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl text-slate-900 dark:text-white font-black tracking-tight">Evolución de Consumo Diario</h2>
+            </div>
+            <div class="relative h-[400px] w-full">
+                <canvas id="graficaConsumoDiario"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm dark:shadow-lg transition-colors duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mr-3 border border-blue-200 dark:border-blue-500/20">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl text-slate-900 dark:text-white font-black tracking-tight">Distribución Horaria del Consumo</h2>
+            </div>
+
+            <div class="relative h-[400px] w-full">
+                <canvas id="boxplotChart"></canvas>
+            </div>
+
+            <div id="boxplotDetails" class="hidden mt-6 bg-slate-50 dark:bg-zinc-950 p-4 rounded-2xl border border-blue-200 dark:border-blue-500/30 transition-all duration-300">
+                <h4 class="text-blue-600 dark:text-blue-400 font-bold text-sm mb-4 flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Detalle de la Hora: <span id="bp-hora" class="text-slate-900 dark:text-white ml-2 text-lg font-black font-mono"></span>
+                </h4>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+                    <div class="bg-white dark:bg-zinc-900 rounded-xl p-3 border border-slate-200 dark:border-zinc-800/80 shadow-sm dark:shadow-none">
+                        <p class="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1">Máximo</p>
+                        <p class="text-slate-800 dark:text-white font-black font-mono"><span id="bp-max"></span> <small class="text-slate-400 dark:text-zinc-500">kWh</small></p>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-900 rounded-xl p-3 border border-slate-200 dark:border-zinc-800/80 shadow-sm dark:shadow-none">
+                        <p class="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1">Q3 (75%)</p>
+                        <p class="text-slate-800 dark:text-white font-black font-mono"><span id="bp-q3"></span> <small class="text-slate-400 dark:text-zinc-500">kWh</small></p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-zinc-900 rounded-xl p-3 border border-blue-200 dark:border-blue-500/40 relative overflow-hidden shadow-inner dark:shadow-none">
+                        <div class="absolute inset-0 bg-blue-500/5"></div>
+                        <p class="text-[10px] text-blue-600 dark:text-blue-400 uppercase tracking-widest font-black mb-1 relative z-10">Mediana</p>
+                        <p class="text-blue-700 dark:text-blue-400 font-black text-lg relative z-10 font-mono"><span id="bp-med"></span> <small class="text-blue-500/70 text-sm">kWh</small></p>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-900 rounded-xl p-3 border border-slate-200 dark:border-zinc-800/80 shadow-sm dark:shadow-none">
+                        <p class="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1">Q1 (25%)</p>
+                        <p class="text-slate-800 dark:text-white font-black font-mono"><span id="bp-q1"></span> <small class="text-slate-400 dark:text-zinc-500">kWh</small></p>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-900 rounded-xl p-3 border border-slate-200 dark:border-zinc-800/80 shadow-sm dark:shadow-none">
+                        <p class="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1">Mínimo</p>
+                        <p class="text-slate-800 dark:text-white font-black font-mono"><span id="bp-min"></span> <small class="text-slate-400 dark:text-zinc-500">kWh</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+            <a href="{% url 'liquidaciones:factura_pdf' frontera.id fecha_str %}" target="_blank"
+                class="bg-slate-800 dark:bg-emerald-600 hover:bg-slate-900 dark:hover:bg-emerald-500 text-white font-black px-6 py-3 rounded-xl transition-colors flex items-center shadow-lg text-sm uppercase tracking-widest">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                Imprimir Factura PDF
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.3.0/build/index.umd.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. INYECTAR DATOS DIRECTAMENTE DE PYTHON A JS
+    const labelsLinea = {{ chart_labels_json|default:"[]"|safe }};
+    const datosActiva = {{ chart_data_activa_json|default:"[]"|safe }};
+    const datosReactiva = {{ chart_data_reactiva_json|default:"[]"|safe }};
+    const boxplotData = {{ boxplot_data|default:"[]"|safe }};
+
+    // Validar si hay datos, si no, poner ceros para que no explote
+    const labels = labelsLinea.length > 0 ? labelsLinea : ['Sin datos'];
+    const activa = datosActiva.length > 0 ? datosActiva : [0];
+    const reactiva = datosReactiva.length > 0 ? datosReactiva : [0];
+
+    // 2. CONFIGURACIÓN DEL TEMA (CLARO/OSCURO)
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#a1a1aa' : '#64748b'; 
+    const gridColor = isDark ? 'rgba(63, 63, 70, 0.3)' : 'rgba(226, 232, 240, 0.8)';
+    const tooltipBg = isDark ? 'rgba(24, 24, 27, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+    const tooltipTitle = isDark ? '#ffffff' : '#0f172a';
+    const tooltipBody = isDark ? '#e4e4e7' : '#334155';
+    const borderColor = isDark ? 'rgba(63, 63, 70, 0.8)' : 'rgba(203, 213, 225, 0.8)';
+
+    Chart.defaults.color = textColor;
+    Chart.defaults.font.family = "'Raleway', 'sans-serif'";
+    Chart.defaults.font.weight = '600';
+
+    // --------------------------------------------------------
+    // 3. GRÁFICA DE BARRAS (Consumo Diario)
+    // --------------------------------------------------------
+    const ctxBar = document.getElementById('graficaConsumoDiario');
+    if (ctxBar) {
+        new Chart(ctxBar.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Energía Activa (kWh)',
+                    data: activa,
+                    backgroundColor: '#10b981', // emerald-500
+                    hoverBackgroundColor: '#34d399',
+                    borderRadius: 4
+                }, {
+                    label: 'Energía Reactiva (kVArh)',
+                    data: reactiva,
+                    backgroundColor: isDark ? '#3f3f46' : '#94a3b8',
+                    hoverBackgroundColor: isDark ? '#52525b' : '#cbd5e1',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { padding: 10 } },
+                    x: { grid: { display: false, drawBorder: false }, ticks: { padding: 10 } }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { usePointStyle: true, padding: 20, boxWidth: 8 } },
+                    tooltip: {
+                        backgroundColor: tooltipBg, titleColor: tooltipTitle, bodyColor: tooltipBody,
+                        borderColor: borderColor, borderWidth: 1, padding: 12, usePointStyle: true
+                    }
+                }
+            }
+        });
+    }
+
+    // --------------------------------------------------------
+    // 4. GRÁFICA BOX PLOT HORARIO
+    // --------------------------------------------------------
+    const ctxBox = document.getElementById('boxplotChart');
+    if (ctxBox && boxplotData.length > 0) {
+        const horasLabels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+
+        new Chart(ctxBox.getContext('2d'), {
+            type: 'boxplot',
+            data: {
+                labels: horasLabels,
+                datasets: [{
+                    label: 'Consumo Activo (kWh)',
+                    data: boxplotData,
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    outlierBackgroundColor: '#ef4444',
+                    outlierBorderColor: '#ef4444',
+                    outlierRadius: 3,
+                    itemRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: tooltipBg, titleColor: tooltipTitle, bodyColor: tooltipBody,
+                        borderColor: borderColor, borderWidth: 1, padding: 12,
+                        callbacks: {
+                            label: function (context) {
+                                const stats = context.raw;
+                                if (!stats) return 'Sin datos en esta hora';
+                                return [
+                                    `Máximo: ${stats.max.toFixed(2)} kWh`,
+                                    `Q3 (75%): ${stats.q3.toFixed(2)} kWh`,
+                                    `Mediana: ${stats.median.toFixed(2)} kWh`,
+                                    `Q1 (25%): ${stats.q1.toFixed(2)} kWh`,
+                                    `Mínimo: ${stats.min.toFixed(2)} kWh`
+                                ];
+                            }
+                        }
+                    }
+                },
+                onClick: (event, elements, chart) => {
+                    if (elements.length > 0) {
+                        const el = elements[0];
+                        const stats = chart.data.datasets[el.datasetIndex].data[el.index];
+
+                        if (stats) {
+                            const panel = document.getElementById('boxplotDetails');
+                            panel.classList.remove('hidden');
+                            panel.classList.add('animate-fade-in');
+
+                            document.getElementById('bp-hora').textContent = horasLabels[el.index];
+                            document.getElementById('bp-max').textContent = stats.max.toFixed(2);
+                            document.getElementById('bp-q3').textContent = stats.q3.toFixed(2);
+                            document.getElementById('bp-med').textContent = stats.median.toFixed(2);
+                            document.getElementById('bp-q1').textContent = stats.q1.toFixed(2);
+                            document.getElementById('bp-min').textContent = stats.min.toFixed(2);
+                        }
+                    }
+                },
+                onHover: (event, elements) => {
+                    event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+                },
+                scales: {
+                    x: { grid: { display: false, drawBorder: false }, ticks: { maxRotation: 45, minRotation: 0 } },
+                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, title: { display: true, text: 'Consumo (kWh)', color: textColor, font: { size: 12 } } }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

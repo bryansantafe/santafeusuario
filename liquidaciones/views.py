@@ -17,6 +17,9 @@ from .models import (
     ComponentePR, ComponenteR
 )
 
+from django.conf import settings
+import os
+
 # ==========================================
 # FUNCIÓN HELPER: CENTRALIZA EL CÁLCULO
 # ==========================================
@@ -93,7 +96,7 @@ def gestionar_contrato(request):
     error_msj = None
     
     if not frontera_id:
-        return redirect('modulo_liquidaciones')
+        return redirect('liquidaciones:modulo_liquidaciones')
         
     frontera = Frontera.objects.filter(id=frontera_id).first()
     contrato = Contrato.objects.filter(frontera_id=frontera_id).order_by('-fecha_inicio').first()
@@ -183,7 +186,7 @@ def detalle_consumo(request):
     frontera_id = request.GET.get('frontera')
     fecha_str = request.GET.get('fecha')
     
-    if not frontera_id: return redirect('modulo_liquidaciones')
+    if not frontera_id: return redirect('liquidaciones:modulo_liquidaciones')
         
     frontera = Frontera.objects.filter(id=frontera_id).first()
     contrato = Contrato.objects.filter(frontera_id=frontera_id).order_by('-fecha_inicio').first()
@@ -273,11 +276,15 @@ def exportar_factura_pdf(request, frontera_id, fecha_str):
         'cu_variable': liq_datos['cu_variable'],
         'total_a_facturar': liq_datos['total_a_facturar'],
         'mes_nombre': f"{meses_es[fecha_dt.month]} {fecha_dt.year}",
+
+        'ruta_css': f"file://{os.path.join(settings.STATIC_ROOT, 'css/style.css')}",
+        'ruta_logo': f"file://{os.path.join(settings.STATIC_ROOT, 'img/logo-horizontal.png')}",
     }
     
     html_string = render_to_string('liquidaciones/factura_pdf.html', context)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="Factura_{frontera.numero_factura}.pdf"'
-    
-    HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(response)
+    # base_url_interna = "http://127.0.0.1:8000"
+
+    HTML(string=html_string).write_pdf(response)
     return response

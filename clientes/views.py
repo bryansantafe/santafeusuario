@@ -15,7 +15,7 @@ def es_staff(user):
 @login_required
 def aceptar_terminos(request):
     if hasattr(request.user, 'registro_terminos'):
-        return redirect('dashboard')
+        return redirect('core:dashboard')
 
     if request.method == 'POST':
         AceptacionTerminos.objects.create(
@@ -23,7 +23,7 @@ def aceptar_terminos(request):
             nombre_usuario=request.user.username,
             correo_asociado=request.user.email
         )
-        return redirect('dashboard')
+        return redirect('core:dashboard')
 
     return render(request, 'clientes/aceptar_terminos.html')
 
@@ -46,7 +46,7 @@ def detalle_cliente(request, cliente_id):
         if 'btn_eliminar_cliente' in request.POST:
             cliente.delete()
             messages.success(request, "Cliente eliminado correctamente.")
-            return redirect('lista_clientes')
+            return redirect('clientes:lista_clientes')
 
         # 2. ELIMINAR FRONTERA
         elif 'btn_eliminar_frontera' in request.POST:
@@ -54,7 +54,7 @@ def detalle_cliente(request, cliente_id):
             frontera = get_object_or_404(Frontera, id=frontera_id, cliente=cliente) # Verificación de seguridad
             frontera.delete()
             messages.success(request, "Frontera eliminada.")
-            return redirect('detalle_cliente', cliente_id=cliente.id)
+            return redirect('clientes:detalle_cliente', cliente_id=cliente.id)
 
         # 3. ACTUALIZAR CLIENTE (Usando el form instanciado)
         elif 'btn_actualizar_cliente' in request.POST:
@@ -62,7 +62,7 @@ def detalle_cliente(request, cliente_id):
             if form_cliente.is_valid():
                 form_cliente.save()
                 messages.success(request, "Datos del cliente actualizados.")
-            return redirect('detalle_cliente', cliente_id=cliente.id)
+            return redirect('clientes:detalle_cliente', cliente_id=cliente.id)
 
         # 4. AGREGAR FRONTERA (Dejamos que el form valide todo)
         elif 'btn_agregar_frontera' in request.POST:
@@ -74,7 +74,7 @@ def detalle_cliente(request, cliente_id):
                 messages.success(request, "Nueva frontera agregada.")
             else:
                 messages.error(request, "Error al agregar la frontera. Revisa los datos.")
-            return redirect('detalle_cliente', cliente_id=cliente.id)
+            return redirect('clientes:detalle_cliente', cliente_id=cliente.id)
 
     # Si es GET, pasamos formularios vacíos para usarlos en el HTML
     contexto = {
@@ -121,7 +121,7 @@ def crear_cliente(request):
                     cliente.save()
 
                 messages.success(request, "Cliente y credenciales de acceso creadas con éxito.")
-                return redirect('lista_clientes')
+                return redirect('clientes:lista_clientes')
             
             except Exception as e:
                 messages.error(request, f"Ocurrió un error interno: {str(e)}")

@@ -1,9 +1,10 @@
+## clientes/urls.py
 from django.urls import path
 from . import views
 from .views import aceptar_terminos, detalle_cliente, crear_cliente, lista_clientes
 from django.contrib.auth import views as auth_views
 
-# app_name = 'clientes'
+app_name = 'clientes'
 
 urlpatterns = [
     path('', lista_clientes, name='lista_clientes'), # Este es el nombre clave

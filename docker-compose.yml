@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  app_santafeusuario:
+    build: .
+    container_name: santafeusuario_django
+    # Usamos 'server' porque vimos que allí está tu wsgi.py
+    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    restart: always
+    volumes:
+      - .:/app
+      - ./staticfiles:/app/staticfiles
+      - .env
+      
+    networks:
+      - red_proxy
+      - main_sfe
+
+networks:
+  red_proxy:
+    external: true
+  main_sfe:
+    external: true
