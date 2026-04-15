@@ -1,0 +1,198 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{% url 'clientes:lista_clientes' %}"
+        class="inline-flex items-center gap-2 text-slate-500 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-500 transition-all group text-sm font-bold uppercase tracking-widest">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Volver a la lista
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-2xl shadow-sm dark:shadow-xl transition-colors duration-300">
+            <h3 class="text-slate-800 dark:text-white font-black mb-6 flex items-center gap-2 text-lg">
+                <span class="text-emerald-500">●</span> Perfil del Cliente
+            </h3>
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="btn_actualizar_cliente">
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 dark:text-zinc-600 uppercase mb-1 block ml-1">Razón Social (Protegido)</label>
+                    <input type="text" value="{{ cliente.nombre_usuario }}" readonly
+                        class="w-full bg-slate-100 dark:bg-zinc-950/50 border border-slate-200 dark:border-zinc-800/50 rounded-lg p-2 text-slate-500 dark:text-zinc-500 text-sm cursor-not-allowed outline-none font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 dark:text-zinc-600 uppercase mb-1 block ml-1">Tipo ID (Protegido)</label>
+                        <select name="tipo_identificacion" disabled
+                            class="w-full bg-slate-100 dark:bg-zinc-950/50 border border-slate-200 dark:border-zinc-800/50 rounded-lg p-2 text-slate-500 dark:text-zinc-500 text-sm cursor-not-allowed outline-none appearance-none font-bold">
+                            <option value="NIT" {% if cliente.es_nit %}selected{% endif %}>NIT</option>
+                            <option value="CC" {% if cliente.es_cc %}selected{% endif %}>C.C.</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 dark:text-zinc-600 uppercase mb-1 block ml-1">N° Id</label>
+                        <input type="text" value="{{ cliente.numero_identificacion }}" readonly
+                            class="w-full bg-slate-100 dark:bg-zinc-950/50 border border-slate-200 dark:border-zinc-800/50 rounded-lg p-2 text-slate-500 dark:text-zinc-500 text-sm cursor-not-allowed outline-none font-mono font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-600 dark:text-zinc-400 uppercase mb-1 block ml-1">Teléfono</label>
+                        <input type="text" name="telefono" value="{{ cliente.telefono }}"
+                            class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-600 dark:text-zinc-400 uppercase mb-1 block ml-1">Correo</label>
+                        <input type="email" name="correo_electronico" value="{{ cliente.correo_electronico }}"
+                            class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 dark:text-zinc-400 uppercase mb-1 block ml-1">Dirección de Facturación</label>
+                    <textarea name="direccion_facturacion" rows="2"
+                        class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner">{{ cliente.direccion_facturacion }}</textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all text-xs uppercase tracking-widest shadow-lg shadow-emerald-600/20 mb-3">
+                        Actualizar Datos
+                    </button>
+
+                    <button type="submit" name="btn_eliminar_cliente"
+                        onclick="return confirm('¿Eliminar agente? Esta acción no se puede deshacer y borrará el acceso al sistema.')"
+                        class="w-full py-2 text-red-500/60 hover:text-red-600 dark:text-red-500/40 dark:hover:text-red-500 text-[10px] uppercase font-bold transition-colors bg-red-50 dark:bg-transparent rounded-lg">
+                        Eliminar cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-2xl shadow-sm dark:shadow-xl transition-colors duration-300">
+            <h3 class="text-slate-800 dark:text-white font-black mb-4 text-lg">Añadir Nueva Frontera</h3>
+            <form method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% csrf_token %}
+                <input type="hidden" name="btn_agregar_frontera">
+
+                <input type="text" name="numero_contrato" placeholder="N° Contrato" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                <input type="text" name="numero_medidor" placeholder="N° Medidor" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                <input type="text" name="numero_factura" placeholder="N° Factura / Cuenta" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+
+                <select name="operador_red"
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                    <option value="" disabled selected>Operador de Red...</option>
+                    {% for val, label in operadores %}
+                    <option value="{{ val }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="text" name="comercializador" placeholder="Comercializador" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+
+                <select name="mercado"
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                    <option value="R">Regulado</option>
+                    <option value="NR" selected>No Regulado</option>
+                </select>
+
+                <select name="nivel_tension"
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                    <option value="" disabled selected>Tensión...</option>
+                    <option value="1">NT1</option>
+                    <option value="2">NT2</option>
+                    <option value="3">NT3</option>
+                    <option value="4">NT4</option>
+                </select>
+
+                <select name="departamento"
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+                    <option value="" disabled selected>Departamento...</option>
+                    {% for val, label in departamentos %}
+                    <option value="{{ val }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="text" name="municipio_frontera" placeholder="Municipio" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner">
+
+                <input type="text" name="direccion_frontera" placeholder="Dirección Física" required
+                    class="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg p-2.5 text-slate-900 dark:text-white text-sm outline-none focus:border-emerald-500 shadow-inner md:col-span-2">
+
+                <button type="submit"
+                    class="w-full bg-slate-800 dark:bg-zinc-800 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold py-2 rounded-lg transition-all text-sm uppercase tracking-widest shadow-md">
+                    Registrar Frontera
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-xl transition-colors duration-300">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 dark:bg-zinc-950 text-slate-500 dark:text-zinc-500 uppercase text-[10px] tracking-widest font-bold border-b border-slate-200 dark:border-zinc-800">
+                        <tr>
+                            <th class="p-4">Contrato</th>
+                            <th class="p-4">Medidor</th>
+                            <th class="p-4">Ubicación</th>
+                            <th class="p-4">Operador</th>
+                            <th class="p-4 text-right">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+                        {% for f in fronteras %}
+                        <tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/30 transition-colors group">
+                            <td class="p-4 text-slate-800 dark:text-white font-bold font-mono">{{ f.numero_contrato }}</td>
+                            <td class="p-4 text-slate-600 dark:text-zinc-400 font-mono text-xs">{{ f.numero_medidor }}</td>
+                            <td class="p-4 text-slate-600 dark:text-zinc-400 text-xs">{{ f.municipio_frontera }}</td>
+                            <td class="p-4 text-emerald-600 dark:text-emerald-500 font-bold text-xs">{{ f.get_operador_red_display }}</td>
+
+                            <td class="p-4 text-right">
+                                <form method="POST" class="inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="frontera_id" value="{{ f.id }}">
+                                    <button type="submit" name="btn_eliminar_frontera"
+                                        onclick="return confirm('¿Borrar esta frontera?')"
+                                        class="text-red-500/50 hover:text-red-600 transition-colors p-1 bg-red-50 dark:bg-transparent rounded">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="p-12 text-center">
+                                <div class="text-slate-400 dark:text-zinc-600 flex flex-col items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                    <span class="italic text-xs font-bold uppercase tracking-widest">No hay fronteras registradas</span>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -12,41 +12,42 @@ def es_staff(user):
 @login_required
 @user_passes_test(es_staff, login_url='/reportes/')
 def dashboard_index(request):
-    ## Totales para las Cards
+    ## 1. Datos de Agentes y Recursos
     total_agentes = Agente.objects.count()
     total_recursos = Recurso.objects.count()
     capacidad_total = Recurso.objects.aggregate(total=Sum('capacidad_efectiva_neta'))['total'] or 0
 
-    ## Datos para Gráfica de Torta (Capacidad por Tecnología)
     datos_tech = Recurso.objects.values('tipo_tecnologia').annotate(
         total=Sum('capacidad_efectiva_neta')
     ).order_by('-total')
 
-    # 3. Datos para Gráfica de Líneas (Agentes registrados por año)
-    # Usamos fecha_registro de Agente
     crecimiento = Agente.objects.annotate(year=ExtractYear('fecha_registro')).values('year').annotate(
         cantidad=Count('agente_id')
     ).order_by('year')
 
+    ## 2. Datos de Clientes y Fronteras
+    clientes = Cliente.objects.all().order_by('-fecha_register')[:3]
+    total_clientes = Cliente.objects.count()
+    total_fronteras = Frontera.objects.count()
+
     context = {
-        
+        # Contexto de Agentes
         'total_agentes': total_agentes,
         'total_recursos': total_recursos,
         'capacidad_total': round(capacidad_total, 2),
-
         'labels_tech': json.dumps([item['tipo_tecnologia'] for item in datos_tech]),
         'valores_tech': json.dumps([float(item['total']) for item in datos_tech]),
-
-        'labels_crecimiento': json.dumps(
-            [item['year'] for item in crecimiento if item['year']]
-        ),
-        'valores_crecimiento': json.dumps(
-            [item['cantidad'] for item in crecimiento if item['year']]
-        ),
-
+        'labels_crecimiento': json.dumps([item['year'] for item in crecimiento if item['year']]),
+        'valores_crecimiento': json.dumps([item['cantidad'] for item in crecimiento if item['year']]),
         'ultimos_agentes': Agente.objects.all().order_by('-fecha_registro')[:5],
-
+        
+        # Contexto de Clientes
+        'ultimos_clientes': clientes,
+        'total_clientes': total_clientes,
+        'total_fronteras': total_fronteras,
     }
+    
+    # La ruta al template está perfecta para la nueva arquitectura
     return render(request, 'core/index.html', context)
     
 @login_required
@@ -62,16 +63,3 @@ def agente_detalle(request, agente_id):
         'recursos': recursos,
         'capacidad_total': capacidad_agente
     })
-# DEBE LLAMARSE IGUAL QUE EN EL URLS.PY
-@login_required
-@user_passes_test(es_staff, login_url='/reportes/')
-def dashboard_index(request): 
-    clientes = Cliente.objects.all().order_by('-fecha_register')[:3]
-    print(f"DEBUG: Se encontraron {clientes.count()} clientes") # <--- Mira si esto sale en la terminal
-    
-    context = {
-        'ultimos_clientes': clientes,
-        'total_clientes': Cliente.objects.count(),
-        'total_fronteras': Frontera.objects.count(),
-    }
-    return render(request, 'core/index.html', context)

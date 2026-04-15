@@ -1,0 +1,134 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-zinc-950 text-zinc-100 p-4 md:p-8 font-sans">
+    <div class="max-w-4xl mx-auto mb-8">
+        <a href="{% url 'liquidaciones:modulo_liquidaciones' %}?usuario={{ frontera.cliente.id }}&frontera={{ frontera.id }}"
+            class="inline-flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors text-sm font-medium mb-4">
+            ← Volver al Panel
+        </a>
+        <h1 class="text-3xl font-black text-white">Gestión de Contrato</h1>
+        <p class="text-zinc-500 mt-2">Frontera: <strong>{{ frontera.numero_factura }}</strong></p>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-zinc-900/40 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
+        <form method="POST" action="." class="p-6 md:p-10 space-y-10">
+            {% csrf_token %}
+            <input type="hidden" name="contrato_id" value="{{ contrato.id|default:'' }}">
+            <input type="hidden" name="frontera" value="{{ frontera.id }}">
+
+            {% if error_msj %}
+            <div class="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-xl text-sm">
+                {{ error_msj }}
+            </div>
+            {% endif %}
+
+            <div class="bg-zinc-950/50 p-6 rounded-2xl border border-zinc-800/50">
+                <h3 class="text-emerald-500 font-bold uppercase tracking-widest text-xs mb-6">1. Condiciones Generales
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Fecha Inicio</label>
+                        <input type="date" name="fecha_inicio" value="{{ contrato.fecha_inicio|date:'Y-m-d' }}" required
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white [color-scheme:dark]">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Fecha Fin</label>
+                        <input type="date" name="fecha_fin" value="{{ contrato.fecha_fin|date:'Y-m-d' }}" required
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white [color-scheme:dark]">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">IPP Base
+                            (Firma)</label>
+                        <input type="number" step="0.0000000001" name="ipp_base"
+                            value="{{ contrato.ipp_base|default:'1.0' }}"
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white font-mono">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">IPC Base
+                            (Firma)</label>
+                        <input type="number" step="0.0000000001" name="ipc_base"
+                            value="{{ contrato.ipc_base|default:'1.0' }}"
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white font-mono">
+                    </div>
+
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Tipo PLD</label>
+                        <select name="tipo_pld"
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white">
+                            {% for pld in opciones_pld %}
+                            <option value="{{ pld.val }}" {% if pld.active %}selected{% endif %}>
+                                {{ pld.val }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="bg-zinc-950/50 p-6 rounded-2xl border border-zinc-800/50">
+                    <h4 class="text-white font-bold mb-4 flex items-center gap-2">
+                        <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">G</span> Generación
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-zinc-500 uppercase">Precio Base ($/kWh)</label>
+                            <input type="number" step="0.0000000001" name="g_base"
+                                value="{{ contrato.precio_g_base|default:'' }}"
+                                class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white font-mono">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-zinc-500 uppercase">Indexado por:</label>
+                            <select name="g_tipo_indice"
+                                class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white">
+                                <option value="">-- Seleccione el Tipo de Índice --</option>
+                                {% for op in opciones_g %}
+                                <option value="{{ op.val }}" {% if op.active %}selected{% endif %}>
+                                    {{ op.val }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-950/50 p-6 rounded-2xl border border-zinc-800/50">
+                    <h4 class="text-white font-bold mb-4 flex items-center gap-2">
+                        <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">C</span> Comercialización
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-zinc-500 uppercase">Precio Base ($/kWh)</label>
+                            <input type="number" step="0.0000000001" name="c_base"
+                                value="{{ contrato.precio_c_base|default:'' }}"
+                                class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white font-mono">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-zinc-500 uppercase">Indexado por:</label>
+                            <select name="c_tipo_indice"
+                                class="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-white">
+                                <option value="">-- Seleccione el Tipo de Índice --</option>
+                                {% for op in opciones_c %}
+                                <option value="{{ op.val }}" {% if op.active %}selected{% endif %}>
+                                    {{ op.val }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4">
+                <button type="submit"
+                    class="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black py-4 px-10 rounded-2xl shadow-lg transition-all">
+                    Guardar y Liquidar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

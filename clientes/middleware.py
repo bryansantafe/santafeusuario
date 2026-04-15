@@ -1,3 +1,4 @@
+### clientes/middleware.py
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -10,7 +11,7 @@ class TerminosMiddleware:
             return self.get_response(request)
 
         path_excepciones = [
-            reverse('aceptar_terminos'),
+            reverse('clientes:aceptar_terminos'),
             reverse('logout'),
             '/admin/',
             '/static/',
@@ -24,6 +25,6 @@ class TerminosMiddleware:
         ya_acepto = AceptacionTerminos.objects.filter(user=request.user).exists()
 
         if not ya_acepto:
-            return redirect('aceptar_terminos')
+            return redirect('clientes:aceptar_terminos')
 
         return self.get_response(request)
